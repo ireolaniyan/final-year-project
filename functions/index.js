@@ -1,53 +1,83 @@
 const functions = require('firebase-functions');
+const { WebhookClient, Text, Card, Image, Suggestion, Payload } = require('dialogflow-fulfillment');
 
-var admin = require('firebase-admin');
+process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
+
+let admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
-var firestore = admin.firestore();
+let firestore = admin.firestore();
 
 
-function displayExamDate(params, res) {
-    var examDocRef = firestore.collection('academicCalendar').doc('examData');
-    var speech;
+// An object of responses used in the welcome intent
+const greetings = [
+    {
+        message: "Hi! I am Unilag's information bot 🤖. What can I help you with?",
+        suggestions: ['Resumption Date', 'Exam Date']
+    },
+    {
+        message: 'Hello 😄, what do you want to know about the University of Lagos?'
+    },
+    {
+        message: 'Great Akokite 🙌! How can I help you?'
+    }
+];
 
-    examDocRef.get().then(function (doc) {
-        if (doc.exists) {
-            console.log("Document ", doc.data());
+function welcome(agent) {
+    const index = Math.floor(Math.random() * greetings.length);         // Number used to randomly select a response from the greetings object
+    const greeting = greetings[index];
 
-            if (params.exam && params.exam_start) {
-                speech = `Examinations will start on ${doc.data().start}. Best of luck!`
-            } else if (params.exam && params.exam_finish) {
-                speech = `By ${doc.data().end}, all faculties except Education should be through with exams`
-            } else {
-                speech = `Exam starts on ${doc.data().start} and ends on ${doc.data().end}`
-            }
+    agent.add(greeting.message);
+    if (greeting.suggestions) {
+        greeting.suggestions.forEach(suggestion => {
+            agent.add(new Suggestion(suggestion));
+        });
+    }
+}
 
-            res.send({
-                fulfillmentText: speech
-            });
-            // TODO: 1. get faculty of education dates
-            // TODO: 2. use suggestion chip
-            // TODO: 3. add context i.e When is exam? => When will it end? || When are we finishing?
-        } else {
-            console.log("Document not found");
-        }
-    }).catch(function (error) {
-        console.log("Error occured: ", error);
-    });
-};
+// function displayExamDate(agent) {
+//     let examDocRef = firestore.collection('academicCalendar').doc('examData');
+//     let speech;
+
+//     examDocRef.get().then(function (doc) {
+//         if (doc.exists) {
+//             // console.log("Document ", doc.data());
+//             if (agent.exam && agent.exam_start) {
+//                 speech = `Examinations will start on ${doc.data().start}. Best of luck!`
+//             } else if (agent.exam && agent.exam_finish) {
+//                 speech = `By ${doc.data().end}, all faculties except Education should be through with exams`
+//             } else {
+//                 speech = `Exam starts on ${doc.data().start} and ends on ${doc.data().end}`
+//             }
+
+//             agent.add(speech);
+
+//             // res.send({
+//             //     fulfillmentText: speech
+//             // });
+//             // TODO: 1. get faculty of education dates
+//             // TODO: 2. use suggestion chips
+//             // TODO: 3. add context i.e When is exam? => When will it end? || When are we finishing?
+//         } else {
+//             console.log("Document not found");
+//         }
+//     }).catch(function (error) {
+//         console.log("Error occured: ", error);
+//     });
+// };
+
+
 
 exports.webhook = functions.https.onRequest((request, response) => {
     // console.log("request.body.queryResult.parameters", request.body.queryResult.parameters);
-    let params = request.body.queryResult.parameters;
-    // response.send({
-    //             fulfillmentText:
-    //                 `${params.name} your hotel booking request for ${params.RoomType} room is forwarded for
-    //                 ${params.persons} persons, we will contact you on ${params.email} soon`
-    // });
-    displayExamDate(params, response);
+    // let params = request.body.queryResult.parameters;
 
-    // response.send({
-    //     fulfillmentText: "Hi"
-    // });
+    const agent = new WebhookClient({ request, response });
+    console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
+    console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
 
+    let intentMap = new Map();
+    intentMap.set('Default Welcome Intent', welcome);
+
+    agent.handleRequest(intentMap);
 
 });
