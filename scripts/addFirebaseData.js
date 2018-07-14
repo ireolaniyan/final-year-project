@@ -30,5 +30,4 @@ async function addExamDate() {
     }
 }
 
-addExamDate()
-
+addExamDate();
