@@ -13,21 +13,20 @@ firestore.settings(settings);
 //   const timestamp = snapshot.get('created_at');
 //   const date = timestamp.toDate();
 
-async function addExamDate() {
+async function addLectureEndDate() {
     try {
-        var examData = {
-            start: 'Monday, 17th September, 2018',
-            end: 'Friday, 28th September, 2018',
-            facultyOfEducation: {
-                start: 'Tuesday, 2nd October, 2018',
-                end: 'Saturday 6th October, 2018'
+        var lectureEndData = {
+            end: 'Friday 7th September, 2018',
+            lectureFreeWeek: {
+                start: 'Monday 10th September, 2018',
+                end: 'Friday 14th September, 2018'
             }
         };
-        const res = await firestore.collection('academicCalendar').doc('examData').set(examData);
+        const res = await firestore.collection('academicCalendar').doc('lectureEndData').set(lectureEndData);
         console.log('Response added', res);
     } catch (error) {
-        console.log('Unable to add record');
+        console.log('Unable to add record', error);
     }
 }
 
-addExamDate();
+addLectureEndDate();

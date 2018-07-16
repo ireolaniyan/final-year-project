@@ -8,6 +8,7 @@ admin.initializeApp(functions.config().firebase);
 let firestore = admin.firestore();
 
 let examDocRef = firestore.collection('academicCalendar').doc('examData');
+let lectureDocRef = firestore.collection('academicCalendar').doc('lectureEndData');
 
 
 // An object of responses used in the welcome function
@@ -37,7 +38,7 @@ function welcome(agent) {
     }
 }
 
-async function displayExamDate(agent) {
+async function examDate(agent) {
     let speech;
     try {
         const doc = await examDocRef.get();
@@ -73,7 +74,7 @@ async function displayExamDate(agent) {
     };
 };
 
-async function displayEducationExamDate(agent) {
+async function educationExamDate(agent) {
     try {
         const doc = await examDocRef.get();
         if (doc.exists) {
@@ -90,6 +91,29 @@ async function displayEducationExamDate(agent) {
     };
 };
 
+async function lectureEnd(agent) {
+    let speech;
+    try {
+        const doc = await lectureDocRef.get();
+        if (doc.exists) {
+            const aboutLectures = {
+                end: `All lectures end on ${doc.data().end}`,
+                freeWeek: `${doc.data().lectureFreeWeek.start} to ${doc.data().lectureFreeWeek.end}. Please be the friend that will take me to the library 😓 📖`
+            }
+            if (agent.parameters.lecture === 'lecture' && agent.parameters.end === 'end')
+                speech = aboutLectures.end;
+            else if (agent.parameters.lecture === 'lecture' && agent.parameters.free_week === 'free week')
+                speech = aboutLectures.freeWeek;
+            agent.add(speech);
+        } else {
+            console.log('lecture document not found');
+        }
+    } catch (e) {
+        console.log('An error occured: ', e);
+    };
+};
+
+
 exports.webhook = functions.https.onRequest((request, response) => {
     const agent = new WebhookClient({ request, response });
 
@@ -97,10 +121,12 @@ exports.webhook = functions.https.onRequest((request, response) => {
 
     intentMap.set('Default Welcome Intent', welcome);
 
-    intentMap.set('Exam Start Date', displayExamDate);
-    intentMap.set('Exam End Date', displayExamDate);
-    intentMap.set('Exam Date', displayExamDate);
-    intentMap.set('Education Exam Date', displayEducationExamDate);
+    intentMap.set('Exam Start Date', examDate);
+    intentMap.set('Exam End Date', examDate);
+    intentMap.set('Exam Date', examDate);
+    intentMap.set('Education Exam Date', educationExamDate);
+
+    intentMap.set('Lectures', lectureEnd);
 
     agent.handleRequest(intentMap);
 });

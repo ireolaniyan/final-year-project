@@ -15,6 +15,7 @@ let admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 let firestore = admin.firestore();
 let examDocRef = firestore.collection('academicCalendar').doc('examData');
+let lectureDocRef = firestore.collection('academicCalendar').doc('lectureEndData');
 // An object of responses used in the welcome function
 const greetings = [
     {
@@ -39,7 +40,7 @@ function welcome(agent) {
         });
     }
 }
-function displayExamDate(agent) {
+function examDate(agent) {
     return __awaiter(this, void 0, void 0, function* () {
         let speech;
         try {
@@ -79,7 +80,7 @@ function displayExamDate(agent) {
     });
 }
 ;
-function displayEducationExamDate(agent) {
+function educationExamDate(agent) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const doc = yield examDocRef.get();
@@ -101,14 +102,42 @@ function displayEducationExamDate(agent) {
     });
 }
 ;
+function lectureEnd(agent) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let speech;
+        try {
+            const doc = yield lectureDocRef.get();
+            if (doc.exists) {
+                const aboutLectures = {
+                    end: `All lectures end on ${doc.data().end}`,
+                    freeWeek: `${doc.data().lectureFreeWeek.start} to ${doc.data().lectureFreeWeek.end}. Please be the friend that will take me to the library 😓 📖`
+                };
+                if (agent.parameters.lecture === 'lecture' && agent.parameters.end === 'end')
+                    speech = aboutLectures.end;
+                else if (agent.parameters.lecture === 'lecture' && agent.parameters.free_week === 'free week')
+                    speech = aboutLectures.freeWeek;
+                agent.add(speech);
+            }
+            else {
+                console.log('lecture document not found');
+            }
+        }
+        catch (e) {
+            console.log('An error occured: ', e);
+        }
+        ;
+    });
+}
+;
 exports.webhook = functions.https.onRequest((request, response) => {
     const agent = new dialogflow_fulfillment_1.WebhookClient({ request, response });
     let intentMap = new Map();
     intentMap.set('Default Welcome Intent', welcome);
-    intentMap.set('Exam Start Date', displayExamDate);
-    intentMap.set('Exam End Date', displayExamDate);
-    intentMap.set('Exam Date', displayExamDate);
-    intentMap.set('Education Exam Date', displayEducationExamDate);
+    intentMap.set('Exam Start Date', examDate);
+    intentMap.set('Exam End Date', examDate);
+    intentMap.set('Exam Date', examDate);
+    intentMap.set('Education Exam Date', educationExamDate);
+    intentMap.set('Lectures', lectureEnd);
     agent.handleRequest(intentMap);
 });
 //# sourceMappingURL=index.js.map
