@@ -52,20 +52,19 @@ async function examDate(agent) {
             };
             let examSuggestion = examDates.suggestion;
 
-            if (agent.action === 'examDate') {
+            if (agent.action === 'examDate')
                 speech = examDates.exam;
-            } else if (agent.action === 'examEnd') {
+            else if (agent.action === 'examEnd')
                 speech = examDates.examEnd;
-            } else if (agent.action === 'examStart') {
+            else if (agent.action === 'examStart')
                 speech = examDates.examStart;
-            }
 
             agent.add(speech);
             agent.add(new Suggestion(examSuggestion));
 
-            // TODO: 1. get faculty of education dates
-            // TODO: 2. use suggestion chips
-            // TODO: 3. add context i.e When is exam? => When will it end? || When are we finishing?
+            // DONE: 1. get faculty of education dates
+            // DONE: 2. use suggestion chips
+            // DONE: 3. add context i.e When is exam? => When will it end? || When are we finishing?
         } else {
             console.log("Document not found");
         }
