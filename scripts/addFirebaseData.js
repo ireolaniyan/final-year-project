@@ -34,7 +34,7 @@ async function addLectureEndData() {
     try {
         var lectureEndData = {
             end: 'Friday 7th September, 2018',
-            freeWeek: {
+            lectureFreeWeek: {
                 start: 'Monday 10th September, 2018',
                 end: 'Friday 14th September, 2018'
             }
@@ -48,45 +48,44 @@ async function addLectureEndData() {
 
 async function addManagementData() {
     try {
-        var managementData = [
-            {
-                vc: 'Professor Oluwatoyin T. Ogundipe',
+        var managementData =
+        {
+            vc: {
+                name: 'Professor Oluwatoyin T. Ogundipe',
                 degrees: 'B.Sc., M.Sc., Ph.D (Ife), MBA (Lagos), F.L.A., FAS',
                 imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/vc.jpg'
             },
-            {
-                dvc: [
-                    {
-                        academics: 'Professor Oluwole Familoni',
-                        imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/dvc1-1.jpg'
-                    },
-                    {
-                        management: 'Professor Emukufia A. Oghojafor',
-                        degrees: 'B.Sc., M.Sc., Ph.D (Lagos)',
-                        imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/dvc2-1.jpg'
-                    },
-                    {
-                        development: 'Professor Folashade Ogunsola',
-                        degrees: 'Ph.D (Wales), FMCPath (Nig), FWACP (WA)',
-                        imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/dvc3.jpg'
-                    }
-                ]
+            dvc: {
+                academics: {
+                    name: 'Professor Oluwole Familoni',
+                    imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/dvc1-1.jpg'
+                },
+                management: {
+                    name: 'Professor Emukufia A. Oghojafor',
+                    degrees: 'B.Sc., M.Sc., Ph.D (Lagos)',
+                    imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/dvc2-1.jpg'
+                },
+                development: {
+                    name: 'Professor Folashade Ogunsola',
+                    degrees: 'Ph.D (Wales), FMCPath (Nig), FWACP (WA)',
+                    imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/dvc3.jpg'
+                }
             },
-            {
-                registrar: 'Dr. (Mrs.) Taiwo F. Ipaye',
+            registrar: {
+                name: 'Dr. (Mrs.) Taiwo F. Ipaye',
                 degrees: 'B.A Ed. (Ife), M.Ed (Lagos), Ph.D (Lagos), FNIM',
                 imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/registrar.jpg'
             },
-            {
-                bursar: 'Mr. Nurudeen Olalekan Ajani Lawal',
+            bursar: {
+                name: 'Mr. Nurudeen Olalekan Ajani Lawal',
                 imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/bursar-1.jpg'
             },
-            {
-                librarian: 'Dr. (Mrs.) Olukemi Adebimpe Fadehan',
+            librarian: {
+                name: 'Dr. (Mrs.) Olukemi Adebimpe Fadehan',
+                degrees: 'B.Ed, M.L.S, Ph.D (Ibadan), CLN',
                 imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/librarian.jpg'
-            },
-        ];
-
+            }
+        };
         const res = await firestore.collection('management').doc('managementData').set(Object.assign({}, managementData));
         console.log('Response added', res);
     } catch (error) {
