@@ -5,7 +5,7 @@ const settings = { timestampsInSnapshots: true };
 firestore.settings(settings);
 
 // you will also
-// need to update code expecting a Date to instead expect a Timestamp. For example:
+// need to update code expecting a Date to instead  expect a Timestamp. For example:
 
 //   // Old:
 //   const date = snapshot.get('created_at');
@@ -48,8 +48,7 @@ async function addLectureEndData() {
 
 async function addManagementData() {
     try {
-        var managementData =
-        {
+        var managementData = {
             vc: {
                 name: 'Professor Oluwatoyin T. Ogundipe',
                 degrees: 'B.Sc., M.Sc., Ph.D (Ife), MBA (Lagos), F.L.A., FAS',
@@ -86,13 +85,68 @@ async function addManagementData() {
                 imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/librarian.jpg'
             }
         };
-        const res = await firestore.collection('management').doc('managementData').set(Object.assign({}, managementData));
+        const res = await firestore.collection('management').doc('managementData').set(managementData);
         console.log('Response added', res);
     } catch (error) {
         console.log('Unable to add record', error);
     }
 };
 
+async function addResumptionData() {
+    try {
+        var resumptionData = {
+            resumptionDate: 'Monday 19th November, 2018'
+        };
+        const res = await firestore.collection('academicCalendar').doc('resumptionData').set(resumptionData);
+        console.log('Response added', res);
+    } catch (error) {
+        console.log('Resumption data not added', error);
+    }
+};
+
+async function addCourseRegistration() {
+    try {
+        var courseRegData = {
+            courseReg: {
+                start: 'Saturday 19th May, 2018',
+                end: 'Sunday 15th July, 2018'
+            },
+            courseEdit: {
+                start: 'Monday 23rd July, 2018',
+                end: 'Sunday 5th August, 2018'
+            }
+        };
+        const res = await firestore.collection('courseRegistration').doc('courseRegData').set(courseRegData);
+        console.log('Added course reg info', res);
+    } catch (error) {
+        console.log('Course reg not added', error);
+    }
+};
+
+async function addProgrammes() {
+    try {
+        var programmesData = {
+
+        }
+    } catch (error) {
+        console.log('Programmes not added ', error);
+    }
+};
+
+async function addFaculties() {
+    try {
+        var faculties = {
+
+        }
+    } catch (error) {
+        console.log('Faculties not added', error);
+    }
+};
+
 // addExamData();
 // addLectureEndData();
-addManagementData();
+// addManagementData();
+// addResumptionData();
+addCourseRegistration();
+// addProgrammes();
+// addFaculties();

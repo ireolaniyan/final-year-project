@@ -1,34 +1,34 @@
 import * as functions from 'firebase-functions';
 import { WebhookClient, Text, Card, Image, Suggestion, Payload } from 'dialogflow-fulfillment';
-import { DocumentBuilder } from '../node_modules/firebase-functions/lib/providers/firestore';
 
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
 let admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp();
 let firestore = admin.firestore();
 
 let examDocRef = firestore.collection('academicCalendar').doc('examData');
 let lectureDocRef = firestore.collection('academicCalendar').doc('lectureEndData');
 let managementDocRef = firestore.collection('management').doc('managementData');
 
-
-// An object of responses used in the welcome function
-const greetings = [
-    {
-        message: "Hi! I am Unilag's information bot 🤖. What can I help you with?",
-        suggestions: ['Resumption Date', 'Exam Date 😓']
-    },
-    {
-        message: 'Hello 😄, what do you want to know about the University of Lagos?',
-        suggestions: ["Who's the VC"]
-    },
-    {
-        message: 'Great Akokite 🙌! How may I help you?'
-    }
-];
+// initialising with a placeholder image incase main image doesn't load properly 📶
+let image = new Image('https://www.kywie.com/wp-content/themes/gecko/assets/images/placeholder.png');
 
 function welcome(agent) {
+    // An object of responses used in the welcome function
+    const greetings = [
+        {
+            message: "Hi! I am Unilag's information bot 🤖. What can I help you with?",
+            suggestions: ['Resumption Date', 'Exam Date 😓']
+        },
+        {
+            message: 'Hello 😄, what do you want to know about the University of Lagos?',
+            suggestions: ["Who's the VC", 'Where is Unilag']
+        },
+        {
+            message: 'Great Akokite 🙌! How may I help you?'
+        }
+    ];
     const index = Math.floor(Math.random() * greetings.length);         // Number used to randomly select a response from the greetings object
     const greeting = greetings[index];
 
@@ -45,7 +45,6 @@ async function examDate(agent) {
     try {
         const doc = await examDocRef.get();
         if (doc.exists) {
-            // console.log("Document ", doc.data());
             const examDates = {
                 examStart: `Examinations will start on ${doc.data().start}. Best of luck! 👍`,
                 examEnd: `By ${doc.data().end}, all faculties except Education should be through with exams 😁💃`,
@@ -56,14 +55,13 @@ async function examDate(agent) {
 
             if (agent.action === 'examDate')
                 speech = examDates.exam;
-            else if (agent.action === 'examEnd')
+            else if (agent.action === 'examEnd' || agent.action === 'examStartDateEnd')
                 speech = examDates.examEnd;
             else if (agent.action === 'examStart')
                 speech = examDates.examStart;
 
             agent.add(speech);
             agent.add(new Suggestion(examSuggestion));
-
             // DONE: 1. get faculty of education dates
             // DONE: 2. use suggestion chips
             // DONE: 3. add context i.e When is exam? => When will it end? || When are we finishing?
@@ -75,22 +73,29 @@ async function examDate(agent) {
     };
 };
 
-async function educationExamDate(agent) {
-    try {
-        const doc = await examDocRef.get();
-        if (doc.exists) {
-            const eduExam = {
-                exam: `Examination in core courses in the Faculty of Education will take place between ${doc.data().facultyOfEducation.start} 
-                and ${doc.data().facultyOfEducation.end}.`
-            }
-            agent.add(eduExam.exam);
-        } else {
-            console.log('Education exam date not found');
-        }
-    } catch (error) {
-        console.log('An error occured: ', error);
-    };
-};
+// async function educationExamDate(agent) {
+//     try {
+//         const doc = await examDocRef.get();
+//         if (doc.exists) {
+//             const eduExam = {
+//                 exam: `Examination in core courses in the Faculty of Education will take place between ${doc.data().facultyOfEducation.start} 
+//                 and ${doc.data().facultyOfEducation.end}.`
+//             }
+//             agent.add(eduExam.exam);
+//         } else {
+//             console.log('Education exam date not found');
+//         }
+//     } catch (error) {
+//         console.log('An error occured: ', error);
+//     };
+// };
+
+function educationExamDate(agent) {
+    return examDocRef.get()
+        .then(doc => doc.exists ? agent.add(`Examination in core courses in the Faculty of Education will take place between ${doc.data().facultyOfEducation.start} 
+        and ${doc.data().facultyOfEducation.end}.`) : console.log('Education exam date not found'))
+        .catch(error => console.log('An error occured: ', error));
+}
 
 async function lectureEnd(agent) {
     let speech;
@@ -143,7 +148,7 @@ async function management(agent) {
                         image: `${doc.data().dvc.management.imageUrl}`
                     },
                     development: {
-                        name: `${doc.data().dvc.development.name} (Development Services)`,
+                        name: `${doc.data().dvc.development.name} is the Deputy VC for Development Services`,
                         degrees: `${doc.data().dvc.development.degrees}`,
                         image: `${doc.data().dvc.development.imageUrl}`
                     }
@@ -164,8 +169,6 @@ async function management(agent) {
                 }
             };
 
-            let image = new Image('https://www.kywie.com/wp-content/themes/gecko/assets/images/placeholder.png');
-
             if (agent.parameters.vc === 'vc') {
                 name = mgt.vc.name;
                 deg = mgt.vc.degrees;
@@ -176,42 +179,69 @@ async function management(agent) {
                 image.setImage(mgt.registrar.image);
             } else if (agent.parameters.bursar === 'bursar') {
                 name = mgt.bursar.name;
-                deg = '';
+                // deg = '';
                 image.setImage(mgt.bursar.image);
             } else if (agent.parameters.librarian === 'librarian') {
                 name = mgt.librarian.name;
                 deg = mgt.librarian.degrees;
                 image.setImage(mgt.librarian.image);
             }
-
+            // TODO: add dvc
             agent.add(image);
             agent.add(name);
-            if (deg) agent.add(deg);
-
+            if (deg) agent.add(deg);                // add degree if it's not null 😐
         } else {
             console.log('Management document not found');
         }
     } catch (error) {
         console.log('An error occured: ', error);
     };
-};
+}
 
+
+async function aboutUs(agent) {
+    let aboutUsData = {
+        title: 'The University of Lagos',
+        text: 'Unilag is a federal government university that has its main campus in Akoka, Yaba. It is regarded as the university of first choice in Nigeria...',
+        buttonText: 'Learn more...',
+        buttonUrl: 'https://unilag.edu.ng/about-us/',
+        imageUrl: 'https://unilag.edu.ng/assets/uploads/2017/01/IMG_4919.jpg',
+        location: 'The University of Lagos has its main campus in Akoka, Yaba.'
+    };
+
+    if (agent.parameters.location === 'location' && agent.parameters.school === 'school') {
+        const location = aboutUsData.location;
+        agent.add(location);
+    } else if (agent.parameters.about === 'about' && agent.parameters.school === 'school') {
+        let card = new Card({
+            title: aboutUsData.title,
+            imageUrl: aboutUsData.imageUrl,
+            text: aboutUsData.text,
+            buttonText: aboutUsData.buttonText,
+            buttonUrl: aboutUsData.buttonUrl
+        });
+        agent.add(card);
+    }
+
+}
 
 exports.webhook = functions.https.onRequest((request, response) => {
     const agent = new WebhookClient({ request, response });
-
     let intentMap = new Map();
 
     intentMap.set('Default Welcome Intent', welcome);
 
     intentMap.set('Exam Start Date', examDate);
     intentMap.set('Exam End Date', examDate);
+    intentMap.set('Exam Start Date - end', examDate);
     intentMap.set('Exam Date', examDate);
     intentMap.set('Education Exam Date', educationExamDate);
 
     intentMap.set('Lectures', lectureEnd);
 
     intentMap.set('Management', management);
+
+    intentMap.set('About', aboutUs);
 
     agent.handleRequest(intentMap);
 });
