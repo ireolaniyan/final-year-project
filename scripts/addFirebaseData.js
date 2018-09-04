@@ -71,9 +71,8 @@ async function addManagementData() {
                 }
             },
             registrar: {
-                name: 'Dr. (Mrs.) Taiwo F. Ipaye',
-                degrees: 'B.A Ed. (Ife), M.Ed (Lagos), Ph.D (Lagos), FNIM',
-                imageUrl: 'https://unilag.edu.ng/assets/uploads/2013/01/registrar.jpg'
+                name: 'Mr. Ismaila Oladejo Azeez',
+                imageUrl: 'https://unilag.edu.ng/assets/uploads/2018/08/registrar3-1.png'
             },
             bursar: {
                 name: 'Mr. Nurudeen Olalekan Ajani Lawal',
@@ -145,7 +144,7 @@ async function addFaculties() {
 
 // addExamData();
 // addLectureEndData();
-// addManagementData();
+addManagementData();
 // addResumptionData();
 addCourseRegistration();
 // addProgrammes();
