@@ -30,7 +30,7 @@ function aboutUnilag(agent) {
                 buttonText: aboutUnilagData.buttonText,
                 buttonUrl: aboutUnilagData.buttonUrl
             });
-            agent.add('Here you go ');
+            agent.add('Here you go!');
             agent.add(card);
         }
     });

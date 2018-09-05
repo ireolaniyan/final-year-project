@@ -6,6 +6,7 @@ const welcome_1 = require("./welcome");
 const examination_1 = require("./examination");
 const about_1 = require("./about");
 const management_1 = require("./management");
+const course_reg_1 = require("./course_reg");
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 exports.webhook = functions.https.onRequest((request, response) => {
     const agent = new dialogflow_fulfillment_1.WebhookClient({ request, response });
@@ -19,6 +20,7 @@ exports.webhook = functions.https.onRequest((request, response) => {
     intentMap.set('Lectures', examination_1.lectureEnd);
     intentMap.set('Management', management_1.default);
     intentMap.set('About', about_1.default);
+    intentMap.set('Course Registration', course_reg_1.default);
     agent.handleRequest(intentMap);
 });
 //# sourceMappingURL=index.js.map

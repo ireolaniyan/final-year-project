@@ -28,7 +28,7 @@ function management(agent) {
                     },
                     dvc: {
                         academics: {
-                            name: `The Deputy Vice-Chancellor (Academic and Research) is ${doc.data().dvc.academics.name}`,
+                            name: `The Deputy Vice-Chancellor (Academics and Research) is ${doc.data().dvc.academics.name}`,
                             image: `${doc.data().dvc.academics.imageUrl}`
                         },
                         management: {

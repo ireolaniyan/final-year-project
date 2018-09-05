@@ -144,8 +144,8 @@ async function addFaculties() {
 
 // addExamData();
 // addLectureEndData();
-addManagementData();
+// addManagementData();
 // addResumptionData();
-addCourseRegistration();
+// addCourseRegistration();
 // addProgrammes();
 // addFaculties();
