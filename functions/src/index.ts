@@ -7,6 +7,7 @@ import { examDate, educationExamDate, lectureEnd } from './examination';
 import aboutUnilag from './about';
 import management from './management';
 import courseRegistration from './courseReg';
+import resumptionDate from './resumption';
 
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
@@ -29,6 +30,8 @@ exports.webhook = functions.https.onRequest((request, response) => {
     intentMap.set('About', aboutUnilag);
 
     intentMap.set('Course Registration', courseRegistration);
+
+    intentMap.set('Resumption Date', resumptionDate);
 
     agent.handleRequest(intentMap);
 });

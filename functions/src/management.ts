@@ -77,9 +77,12 @@ export default async function management(agent) {
                     image.setImage(mgt.librarian.image);
                 }
                 // TODO: add dvc
+                let details = name;
+                if (deg) details += deg;
                 agent.add(image);
-                agent.add(name);
-                if (deg) agent.add(deg);                // add degree if it's not null 😐
+                // agent.add(name);
+                // if (deg) agent.add(deg);                // add degree if it's not null 😐
+                agent.add(details);
             }
         } else {
             console.log('Management document not found');

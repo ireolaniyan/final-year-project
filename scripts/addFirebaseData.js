@@ -4,15 +4,6 @@ const { firestore } = require('./firebase.js');
 const settings = { timestampsInSnapshots: true };
 firestore.settings(settings);
 
-// you will also
-// need to update code expecting a Date to instead  expect a Timestamp. For example:
-
-//   // Old:
-//   const date = snapshot.get('created_at');
-//   // New:
-//   const timestamp = snapshot.get('created_at');
-//   const date = timestamp.toDate();
-
 async function addExamData() {
     try {
         var examData = {
@@ -28,7 +19,7 @@ async function addExamData() {
     } catch (error) {
         console.log('Unable to add record');
     }
-};
+}
 
 async function addLectureEndData() {
     try {
@@ -44,7 +35,7 @@ async function addLectureEndData() {
     } catch (error) {
         console.log('Unable to add record');
     }
-};
+}
 
 async function addManagementData() {
     try {
@@ -89,7 +80,7 @@ async function addManagementData() {
     } catch (error) {
         console.log('Unable to add record', error);
     }
-};
+}
 
 async function addResumptionData() {
     try {
@@ -101,7 +92,7 @@ async function addResumptionData() {
     } catch (error) {
         console.log('Resumption data not added', error);
     }
-};
+}
 
 async function addCourseRegistration() {
     try {
@@ -120,7 +111,7 @@ async function addCourseRegistration() {
     } catch (error) {
         console.log('Course reg not added', error);
     }
-};
+}
 
 async function addProgrammes() {
     try {
@@ -130,7 +121,7 @@ async function addProgrammes() {
     } catch (error) {
         console.log('Programmes not added ', error);
     }
-};
+}
 
 async function addFaculties() {
     try {
@@ -140,7 +131,7 @@ async function addFaculties() {
     } catch (error) {
         console.log('Faculties not added', error);
     }
-};
+}
 
 // addExamData();
 // addLectureEndData();

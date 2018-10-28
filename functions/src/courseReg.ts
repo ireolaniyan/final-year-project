@@ -10,7 +10,7 @@ export default async function courseRegistration(agent) {
             if (agent.parameters.course === 'course' && agent.parameters.registration === 'registration') {
                 speech = `You can register your courses between ${doc.data().courseReg.start} and ${doc.data().courseReg.end}`;
             } else if (agent.parameters.course === 'course' && agent.parameters.edit === 'edit') {
-                speech = `That's from ${doc.data().courseEdit.start} to ${doc.data().courseEdit.end}. Hurry Up!`;
+                speech = `That's from ${doc.data().courseEdit.start} to ${doc.data().courseEdit.end}`;
             }
             agent.add(speech);
         } else {

@@ -1,6 +1,6 @@
 import { Card } from 'dialogflow-fulfillment';
 
-export default async function aboutUnilag(agent) {
+export default function aboutUnilag(agent) {
     let aboutUnilagData = {
         title: 'University of Lagos',
         text: 'Unilag is a federal government university that has its main campus in Akoka, Yaba. It is regarded as the university of first choice in Nigeria...',

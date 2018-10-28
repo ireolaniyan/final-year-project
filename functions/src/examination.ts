@@ -32,7 +32,7 @@ export async function examDate(agent) {
     } catch (error) {
         console.log("Error occured: ", error);
     };
-};
+}
 
 export function educationExamDate(agent) {
     return examDocRef.get()
@@ -67,4 +67,4 @@ export async function lectureEnd(agent) {
     } catch (e) {
         console.log('An error occured: ', e);
     };
-};
+}
