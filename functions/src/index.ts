@@ -12,26 +12,26 @@ import resumptionDate from './resumption';
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
 exports.webhook = functions.https.onRequest((request, response) => {
-    const agent = new WebhookClient({ request, response });
-    let intentMap = new Map();
+	const agent = new WebhookClient({ request, response });
+	let intentMap = new Map();
 
-    intentMap.set('Default Welcome Intent', welcome);
+	intentMap.set('Default Welcome Intent', welcome);
 
-    intentMap.set('Exam Start Date', examDate);
-    intentMap.set('Exam End Date', examDate);
-    intentMap.set('Exam Start Date - end', examDate);
-    intentMap.set('Exam Date', examDate);
-    intentMap.set('Education Exam Date', educationExamDate);
+	intentMap.set('Exam Start Date', examDate);
+	intentMap.set('Exam End Date', examDate);
+	intentMap.set('Exam Start Date - end', examDate);
+	intentMap.set('Exam Date', examDate);
+	intentMap.set('Education Exam Date', educationExamDate);
 
-    intentMap.set('Lectures', lectureEnd);
+	intentMap.set('Lectures', lectureEnd);
 
-    intentMap.set('Management', management);
+	intentMap.set('Management', management);
 
-    intentMap.set('About', aboutUnilag);
+	intentMap.set('About', aboutUnilag);
 
-    intentMap.set('Course Registration', courseRegistration);
+	intentMap.set('Course Registration', courseRegistration);
 
-    intentMap.set('Resumption Date', resumptionDate);
+	intentMap.set('Resumption Date', resumptionDate);
 
-    agent.handleRequest(intentMap);
+	agent.handleRequest(intentMap);
 });

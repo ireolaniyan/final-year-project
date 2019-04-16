@@ -45,11 +45,10 @@ function examDate(agent) {
     });
 }
 exports.examDate = examDate;
-;
 function educationExamDate(agent) {
     return examDocRef.get()
         .then(doc => doc.exists ? agent.add(`Examination in core courses in the Faculty of Education will take place between ${doc.data().facultyOfEducation.start} 
-        and ${doc.data().facultyOfEducation.end}.`) : console.log('Education exam date not found'))
+		and ${doc.data().facultyOfEducation.end}.`) : console.log('Education exam date not found'))
         .catch(error => console.log('An error occured: ', error));
 }
 exports.educationExamDate = educationExamDate;
@@ -84,5 +83,4 @@ function lectureEnd(agent) {
     });
 }
 exports.lectureEnd = lectureEnd;
-;
 //# sourceMappingURL=examination.js.map
